@@ -354,8 +354,8 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			}).getLatLng());
 			lastPtDistance = Math.min(
 				this._map.latLngToContainerPoint(firstMarker.getLatLng()).distanceTo(cursorMarker),
-				this._map.latLngToContainerPoint(lastMarker.getLatLng()).distanceTo(cursorMarker),
-			)
+				this._map.latLngToContainerPoint(lastMarker.getLatLng()).distanceTo(cursorMarker)
+			);
 		} else {
 			lastPtDistance = Infinity;
 		}
