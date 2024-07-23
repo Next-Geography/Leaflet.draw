@@ -340,24 +340,22 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	// of the closing point (first point for shapes, last point for lines)
 	// this is semi-ugly code but the only reliable way i found to get the job done
 	// note: calculating point.distanceTo between mouseDownOrigin and last marker did NOT work
-	_calculateFinishDistance: function (potentialLatLng) {
+	_calculateFinishDistance: function (cursorLatLng) {
 		var lastPtDistance;
-		if (this._markers.length > 0) {
-			var finishMarker;
-			if (this.type === L.Draw.Polyline.TYPE) {
-				finishMarker = this._markers[this._markers.length - 1];
-			} else if (this.type === L.Draw.Polygon.TYPE) {
-				finishMarker = this._markers[0];
-			} else {
+		if (this._markers.length > 2) {
+			if (this.type !== L.Draw.Polyline.TYPE && this.type !== L.Draw.Polygon.TYPE) {
 				return Infinity;
 			}
-			var lastMarkerPoint = this._map.latLngToContainerPoint(finishMarker.getLatLng()),
-				potentialMarker = new L.Marker(potentialLatLng, {
-					icon: this.options.icon,
-					zIndexOffset: this.options.zIndexOffset * 2
-				});
-			var potentialMarkerPint = this._map.latLngToContainerPoint(potentialMarker.getLatLng());
-			lastPtDistance = lastMarkerPoint.distanceTo(potentialMarkerPint);
+			var firstMarker = this._markers[0];
+			var lastMarker = this._markers[this._markers.length - 1];
+			var cursorMarker = this._map.latLngToContainerPoint(new L.Marker(cursorLatLng, {
+				icon: this.options.icon,
+				zIndexOffset: this.options.zIndexOffset * 2
+			}).getLatLng());
+			lastPtDistance = Math.min(
+				this._map.latLngToContainerPoint(firstMarker.getLatLng()).distanceTo(cursorMarker),
+				this._map.latLngToContainerPoint(lastMarker.getLatLng()).distanceTo(cursorMarker),
+			)
 		} else {
 			lastPtDistance = Infinity;
 		}
